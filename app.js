@@ -36,4 +36,8 @@ router.get("/songs", function(req, res) {
 
 //all requests that usually use an api start with /api.. so the URL would be localhost:3000/apo/songs
 app.use("/api", router)
-app.listen(3000)
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

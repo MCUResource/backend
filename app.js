@@ -40,6 +40,33 @@ router.post("/songs", async (req,res) =>{
     }
 })
 
+//Grab a single song in the database
+router.get("/songs/:id", async (req,res) =>{
+    try{
+        const song = await Song.findById(req.params.id)
+        res.json(song)
+    }
+    catch{
+        res.status(400).send(err)
+    }
+})
+
+//update is to update an existing record/resource/database entry.. it uses a PUT request
+router.put("/songs/:id", async(req,res) =>{
+    //first we need to find and update the song the front end wants us to udpate.
+    //to do this we need to request the id of the song from request
+    //and then find it in the database and update it.
+    try{
+        const song = req.body
+        await Song.updateOne({_id: req.params.id},song)
+        console.log(song)
+        res.sendStatus(204)
+    }
+    catch(err){
+        res.status(400).send(err)
+    }
+})
+
 
 //all requests that usually use an api start with /api.. so the URL would be localhost:3000/apo/songs
 app.use("/api", router)

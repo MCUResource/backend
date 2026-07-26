@@ -45,39 +45,35 @@ router.post("/auth", async(req,res) => {
     }
     //try to find the username in the database, then see if it matches with a username and password
     //await finding a user
-    await User.findOne({username : req.body.username}, function(err,user){
-        //connection or server error
-        if(err){
-            res.statu(400).send(err)
+   let user = await User.findOne({username : req.body.username})
+   
+   if(!user){
+    res.status(401).json({error: "Bad Username"})
+   }
+    //check to see if the user's password matches the requests password
+    else{
+        if(user.password != req.body.password){
+            res.status(401).json({error: "Bad Password"})
         }
-        else if(!user){
-            res.status(401).json({error: "Bad Username"})
-        }
-        //check to see if the user's password matches the requests password
+        //successful login
         else{
-            if(user.password != req.body.password){
-                res.status(401).json({error: "Bad Password"})
-            }
-            //successful login
-            else{
-                //create a token that is encoded with the jwt library, and send back the username... this will be important later
-                //we also will send back as part of the token that you are currently authorized
-                //we could do this with a boolean or a number value i.e. if auth = 0 you are not authorized, if auth = 1 you are authorized
+            //create a token that is encoded with the jwt library, and send back the username... this will be important later
+            //we also will send back as part of the token that you are currently authorized
+            //we could do this with a boolean or a number value i.e. if auth = 0 you are not authorized, if auth = 1 you are authorized
+            username2 = user.username
+            const token = jwt.encode({username: user.username},secret)
+            const auth = 1
 
-                username2 = user.username
-                const token = jwt.encode({username: user.username},secret)
-                const auth = 1
-
-                //respond with the token
-                res.json({
-                    username2,
-                    token:token,
-                    auth:auth
-                })
-            }
+            //respond with the token
+            res.json({
+                username2,
+                token:token,
+                auth:auth
+            })
         }
-    })
+    }
 })
+
 
 //grab all the songs in a database
 router.get("/songs", async function(req, res) {

@@ -3,6 +3,9 @@ const express = require("express")
 const Song = require("./models/song")
 //we have to use cors in order to host a front end and backend on the same device
 var cors = require("cors")
+// const bodyParser = require("body-parser")
+const jwt = require("jwt-simple")
+const User = require("./models/users")
 // activate or tell this app variable to be an express server
 const app = express()
 app.use(cors())
@@ -10,6 +13,28 @@ app.use(cors())
 app.use(express.json())
 
 const router = express.Router()
+const secret = "supersecret"
+
+//creating a new user
+router.post("/user", async(req,res) =>{
+    if(!req.body.username || !req.body.password){
+        res.status(400).json({error: "Missing username or password"})
+    }
+
+    const newUser = await new User({
+        username: req.body.username,
+        password: req.body.password,
+        status: req.body.status
+    })
+    try{
+        await newUser.save()
+        console.log(newUser)
+        res.sendStatus(201) //created
+    }
+    catch(err){
+        res.status(400).send(err)
+    }
+})
 
 //grab all the songs in a database
 router.get("/songs", async function(req, res) {

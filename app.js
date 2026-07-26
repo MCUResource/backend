@@ -67,6 +67,17 @@ router.put("/songs/:id", async(req,res) =>{
     }
 })
 
+router.delete("/songs/:id", async(req,res) => {
+    //methos or function in mongoose/mongo to delete a single instance of a song or object
+   try{
+    await Song.deleteOne({_id: req.params.id})
+   }
+
+   catch(err){
+    res.status(400).send(err)
+   }
+})
+
 
 //all requests that usually use an api start with /api.. so the URL would be localhost:3000/apo/songs
 app.use("/api", router)

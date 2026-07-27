@@ -8,7 +8,6 @@ const Song = db.model("Song", {
     popularity: { type: Number, min: 1, max: 10 },
     releaseDate: { type:Date, default: Date.now },
     genre: [ String ],
-    username: String
 });
 
 module.exports = Song;
